@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Автодокументы под ключ</title>
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      background:#000;
+      color:#fff;
+      overflow-x:hidden;
+    }
+
+    .header{
+      position:absolute;
+      top:20px;
+      left:50%;
+      transform:translateX(-50%);
+      width:calc(100% - 32px);
+      max-width:1180px;
+      z-index:1000;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px 14px 12px 24px;
+      border-radius:999px;
+      background:rgba(12,12,12,0.58);
+      border:1px solid rgba(255,255,255,0.12);
+      backdrop-filter:blur(26px);
+      box-shadow:0 24px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+      animation:fadeDown 0.8s ease forwards;
+    }
+
+    .logo{
+      color:#fff;
+      text-decoration:none;
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 18px rgba(34,197,94,0.8);
+    }
+
+    #menu-check{display:none}
+
+    .menu-toggle{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:5px;
+      cursor:pointer;
+      transition:0.35s ease;
+    }
+
+    .menu-toggle span{
+      width:18px;
+      height:2px;
+      background:#fff;
+      border-radius:10px;
+      transition:0.35s ease;
+    }
+
+    #menu-check:checked + .menu-toggle span:nth-child(1){
+      transform:translateY(7px) rotate(45deg);
+    }
+
+    #menu-check:checked + .menu-toggle span:nth-child(2){
+      opacity:0;
+    }
+
+    #menu-check:checked + .menu-toggle span:nth-child(3){
+      transform:translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-menu{
+      position:absolute;
+      top:70px;
+      right:0;
+      width:290px;
+      background:rgba(14,14,14,0.9);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:32px;
+      padding:24px;
+      display:none;
+      box-shadow:0 30px 90px rgba(0,0,0,0.65);
+      backdrop-filter:blur(30px);
+      animation:menuOpen 0.35s ease forwards;
+    }
+
+    #menu-check:checked ~ .mobile-menu{display:block}
+
+    .mobile-menu nav{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-bottom:22px;
+    }
+
+    .mobile-menu nav a{
+      color:rgba(255,255,255,0.82);
+      text-decoration:none;
+      font-size:17px;
+      padding:13px 14px;
+      border-radius:18px;
+      transition:0.3s ease;
+    }
+
+    .mobile-menu nav a:hover{
+      color:#fff;
+      background:rgba(255,255,255,0.08);
+      transform:translateX(4px);
+    }
+
+    .flags{
+      display:flex;
+      gap:10px;
+      padding-top:18px;
+      border-top:1px solid rgba(255,255,255,0.1);
+    }
+
+    .flag{
+      width:34px;
+      height:34px;
+      border:none;
+      border-radius:50%;
+      overflow:hidden;
+      cursor:pointer;
+      padding:0;
+      background:none;
+      box-shadow:0 10px 26px rgba(0,0,0,0.35);
+    }
+
+
+    .lang-btn{
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      border:1px solid rgba(34,197,94,0.35);
+      background:rgba(34,197,94,0.08);
+      color:#22c55e;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:0.08em;
+      cursor:pointer;
+      font-family:inherit;
+      box-shadow:0 10px 26px rgba(0,0,0,0.35);
+      transition:0.3s ease;
+    }
+
+    .lang-btn.active,
+    .lang-btn:hover{
+      background:#22c55e;
+      color:#000;
+      box-shadow:0 0 22px rgba(34,197,94,0.45);
+    }
+
+    .flag img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .hero{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:170px 22px 110px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+      background:#050505;
+    }
+
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:1;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(0,0,0,0.10) 0%,
+          rgba(0,0,0,0.24) 42%,
+          rgba(0,0,0,0.78) 82%,
+          #050505 100%
+        ),
+        linear-gradient(to right, rgba(0,0,0,0.40), rgba(0,0,0,0.08), rgba(0,0,0,0.46));
+      pointer-events:none;
+    }
+
+    .hero-slider{
+      position:absolute;
+      inset:0;
+      z-index:0;
+      overflow:hidden;
+    }
+
+    .hero-slide{
+      position:absolute;
+      inset:0;
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      opacity:0;
+      animation:heroSlider 18s infinite;
+      transform:scale(1.04);
+    }
+
+    .slide-1{
+      background-image:url('https://images.unsplash.com/photo-1555215695-3004980ad54e?q=90&w=1800&auto=format&fit=crop');
+      animation-delay:0s;
+    }
+
+    .slide-2{
+      background-image:url('https://images.unsplash.com/photo-1556189250-72ba954cfc2b?q=90&w=1800&auto=format&fit=crop');
+      animation-delay:6s;
+    }
+
+    .slide-3{
+      background-image:url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=90&w=1800&auto=format&fit=crop');
+      animation-delay:12s;
+    }
+
+    @keyframes heroSlider{
+      0%{opacity:0; transform:scale(1.04)}
+      8%{opacity:1}
+      30%{opacity:1}
+      42%{opacity:0; transform:scale(1.09)}
+      100%{opacity:0; transform:scale(1.09)}
+    }
+
+    .hero-content{
+      position:relative;
+      z-index:2;
+      max-width:980px;
+      text-shadow:0 14px 45px rgba(0,0,0,0.75);
+      animation:fadeUp 1.1s ease forwards;
+      transition:transform 0.2s linear;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:12px 20px;
+      border-radius:999px;
+      margin-bottom:34px;
+      font-size:14px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(0,0,0,0.26);
+    }
+
+    h1{
+      font-size:clamp(52px,10vw,112px);
+      line-height:0.9;
+      letter-spacing:-5px;
+      margin-bottom:32px;
+      font-weight:850;
+    }
+
+    .subtitle{
+      font-size:clamp(21px,3vw,36px);
+      margin-bottom:26px;
+      color:rgba(255,255,255,0.94);
+    }
+
+    .description{
+      max-width:700px;
+      margin:0 auto 46px;
+      font-size:clamp(17px,2vw,22px);
+      line-height:1.65;
+      color:rgba(255,255,255,0.78);
+    }
+
+    .btn{
+      display:inline-block;
+      padding:19px 34px;
+      border-radius:999px;
+      text-decoration:none;
+      font-size:16px;
+      font-weight:750;
+      background:#22c55e;
+      color:#000;
+      box-shadow:0 24px 70px rgba(34,197,94,0.38);
+      margin-bottom:34px;
+      transition:0.35s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-5px) scale(1.02);
+      background:#39e674;
+    }
+
+    .trust{
+      font-size:15px;
+      line-height:1.7;
+      color:rgba(255,255,255,0.66);
+    }
+
+    .section{
+      padding:150px 22px;
+      text-align:center;
+      background:rgba(5,5,5,0.92);
+      border-top:1px solid rgba(255,255,255,0.05);
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(45px);
+      transition:1s ease;
+    }
+
+    .reveal.active{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .section h2{
+      font-size:clamp(40px,7vw,72px);
+      margin-bottom:28px;
+      letter-spacing:-3px;
+      line-height:0.98;
+      font-weight:820;
+    }
+
+    .section p{
+      max-width:720px;
+      margin:0 auto;
+      font-size:20px;
+      line-height:1.75;
+      color:rgba(255,255,255,0.64);
+    }
+
+    .services-list,
+    .why-list,
+    .reviews-list{
+      max-width:1080px;
+      margin:70px auto 0;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+
+    .steps-list{
+      max-width:1100px;
+      margin:80px auto 0;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:22px;
+    }
+
+    .service-item,
+    .why-item,
+    .review-item,
+    .step-item,
+    .faq-item{
+      position:relative;
+      overflow:hidden;
+      padding:38px;
+      text-align:left;
+      border-radius:34px;
+      background:linear-gradient(145deg, rgba(255,255,255,0.085), rgba(255,255,255,0.025));
+      border:1px solid rgba(255,255,255,0.11);
+      box-shadow:0 24px 80px rgba(0,0,0,0.28);
+      transition:0.4s ease;
+    }
+
+    .service-item::before,
+    .why-item::before,
+    .review-item::before,
+    .step-item::before,
+    .faq-item::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:radial-gradient(circle at top right, rgba(34,197,94,0.18), transparent 38%);
+      opacity:0;
+      transition:0.4s ease;
+      pointer-events:none;
+    }
+
+    .service-item:hover::before,
+    .why-item:hover::before,
+    .review-item:hover::before,
+    .step-item:hover::before,
+    .faq-item:hover::before{
+      opacity:1;
+    }
+
+    .service-item > *,
+    .why-item > *,
+    .review-item > *,
+    .step-item > *,
+    .faq-item > *{
+      position:relative;
+      z-index:2;
+    }
+
+    .service-item:hover,
+    .why-item:hover,
+    .review-item:hover,
+    .step-item:hover,
+    .faq-item:hover{
+      transform:translateY(-10px);
+      border-color:rgba(34,197,94,0.35);
+      box-shadow:0 34px 100px rgba(0,0,0,0.45);
+    }
+
+    .service-icon,
+    .why-icon{
+      width:62px;
+      height:62px;
+      border-radius:22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:26px;
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.14);
+    }
+
+    .service-icon svg,
+    .why-icon svg{
+      width:30px;
+      height:30px;
+      stroke:#22c55e;
+      stroke-width:2;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .service-item h3,
+    .why-item h3,
+    .review-item h3,
+    .step-item h3,
+    .faq-toggle{
+      font-size:28px;
+      line-height:1.15;
+      margin-bottom:16px;
+      color:#fff;
+    }
+
+    .service-item p,
+    .why-item p,
+    .review-item p,
+    .step-item p,
+    .faq-answer p{
+      font-size:16px;
+      line-height:1.8;
+      color:rgba(255,255,255,0.66);
+    }
+
+    .step-number{
+      font-size:72px;
+      line-height:1;
+      font-weight:850;
+      color:rgba(255,255,255,0.14);
+      margin-bottom:32px;
+    }
+
+    .review-photo{
+      width:70px;
+      height:70px;
+      border-radius:50%;
+      object-fit:cover;
+      margin-bottom:24px;
+    }
+
+    .review-item span{
+      display:block;
+      margin-bottom:18px;
+      color:rgba(255,255,255,0.4);
+    }
+
+    .faq-wrap{
+      max-width:900px;
+      margin:70px auto 0;
+      display:grid;
+      gap:18px;
+    }
+
+    .faq-item{
+      border-radius:30px;
+      background:linear-gradient(145deg, rgba(255,255,255,0.095), rgba(255,255,255,0.025));
+      backdrop-filter:blur(20px);
+    }
+
+    .faq-toggle{
+      width:100%;
+      padding:28px 30px;
+      border:none;
+      background:transparent;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      cursor:pointer;
+      text-align:left;
+      font-weight:800;
+      font-family:inherit;
+    }
+
+    .faq-icon-plus{
+      width:38px;
+      height:38px;
+      min-width:38px;
+      border-radius:50%;
+      background:rgba(34,197,94,0.12);
+      border:1px solid rgba(34,197,94,0.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      transition:0.35s ease;
+    }
+
+    .faq-icon-plus::before,
+    .faq-icon-plus::after{
+      content:"";
+      position:absolute;
+      width:16px;
+      height:2px;
+      background:#22c55e;
+      border-radius:10px;
+      transition:0.35s ease;
+    }
+
+    .faq-icon-plus::after{
+      transform:rotate(90deg);
+    }
+
+    .faq-item.active .faq-icon-plus{
+      background:#22c55e;
+    }
+
+    .faq-item.active .faq-icon-plus::before,
+    .faq-item.active .faq-icon-plus::after{
+      background:#000;
+    }
+
+    .faq-item.active .faq-icon-plus::after{
+      transform:rotate(0deg);
+    }
+
+    .faq-answer{
+      max-height:0;
+      overflow:hidden;
+      transition:max-height 0.45s ease;
+    }
+
+    .faq-answer p{
+      padding:0 30px 30px;
+    }
+
+    .faq-item.active .faq-answer{
+      max-height:260px;
+    }
+
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.72);
+      backdrop-filter:blur(14px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:5000;
+    }
+
+    .modal.active{
+      display:flex;
+    }
+
+    .modal-box{
+      width:100%;
+      max-width:430px;
+      position:relative;
+      padding:38px;
+      border-radius:34px;
+      background:linear-gradient(145deg, rgba(20,20,20,0.96), rgba(5,5,5,0.96));
+      border:1px solid rgba(255,255,255,0.14);
+      box-shadow:0 30px 100px rgba(0,0,0,0.75);
+      text-align:center;
+    }
+
+    .modal-close{
+      position:absolute;
+      top:16px;
+      right:16px;
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(255,255,255,0.08);
+      color:#fff;
+      font-size:24px;
+      cursor:pointer;
+      line-height:1;
+    }
+
+    .modal-box h2{
+      font-size:32px;
+      line-height:1.1;
+      margin-bottom:14px;
+      letter-spacing:-1px;
+    }
+
+    .modal-box p{
+      color:rgba(255,255,255,0.65);
+      line-height:1.6;
+      margin-bottom:26px;
+    }
+
+    .modal-box input{
+      width:100%;
+      padding:17px 18px;
+      margin-bottom:14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(255,255,255,0.08);
+      color:#fff;
+      font-size:16px;
+      outline:none;
+      font-family:inherit;
+    }
+
+    .modal-box input::placeholder{
+      color:rgba(255,255,255,0.45);
+    }
+
+    .submit-btn,
+    .back-btn{
+      width:100%;
+      margin-top:10px;
+      padding:18px;
+      border:none;
+      border-radius:999px;
+      background:#22c55e;
+      color:#000;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .form-screen,
+    .success-screen{
+      display:none;
+    }
+
+    .form-screen.active,
+    .success-screen.active{
+      display:block;
+    }
+
+    
+
+    @media (max-width:390px){
+      .hero{
+        padding-top:130px;
+      }
+
+      .hero-content{
+        margin-top:88px;
+      }
+    }
+
+
+    
+
+    @media (max-width:390px){
+      .hero-content{
+        margin-top:92px;
+      }
+    }
+
+
+    @media (max-width:700px){
+      .hero-slide{
+        background-size:cover;
+        background-position:center top;
+        transform:scale(1.02);
+      }
+
+      .slide-1{
+        background-position:center top;
+      }
+
+      .slide-2{
+        background-position:center center;
+      }
+
+      .slide-3{
+        background-position:center top;
+      }
+
+      .hero-content{
+        position:relative;
+        z-index:2;
+      }
+    }
+
+
+    @media (max-width:700px){
+      .section{
+        padding:82px 16px;
+      }
+
+      .services-list,
+      .why-list,
+      .reviews-list,
+      .steps-list{
+        max-width:420px;
+        margin:42px auto 0;
+        gap:14px;
+      }
+
+      .service-item,
+      .why-item,
+      .review-item,
+      .step-item,
+      .faq-item{
+        width:100%;
+        padding:22px;
+        border-radius:24px;
+      }
+
+      .service-icon,
+      .why-icon{
+        width:52px;
+        height:52px;
+        border-radius:18px;
+        margin-bottom:18px;
+      }
+
+      .service-item h3,
+      .why-item h3,
+      .review-item h3,
+      .step-item h3{
+        font-size:23px;
+        line-height:1.2;
+        margin-bottom:12px;
+      }
+
+      .service-item p,
+      .why-item p,
+      .review-item p,
+      .step-item p,
+      .faq-answer p{
+        font-size:15px;
+        line-height:1.65;
+      }
+
+      .step-number{
+        font-size:44px;
+        margin-bottom:20px;
+      }
+
+      .review-photo{
+        width:58px;
+        height:58px;
+        margin-bottom:18px;
+      }
+
+      .faq-wrap{
+        max-width:420px;
+        margin-top:42px;
+      }
+
+      .faq-toggle{
+        padding:20px;
+        font-size:20px;
+      }
+    }
+
+
+    /* FIX: карточки на телефоне должны идти в один столбик, а не в 3 узкие колонки */
+    @media (max-width:900px){
+      .services-list,
+      .why-list,
+      .reviews-list,
+      .steps-list{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        max-width:430px !important;
+        width:100% !important;
+        margin-left:auto !important;
+        margin-right:auto !important;
+        gap:18px !important;
+      }
+
+      .service-item,
+      .why-item,
+      .review-item,
+      .step-item{
+        width:100% !important;
+        min-width:0 !important;
+        height:auto !important;
+        min-height:auto !important;
+        padding:26px !important;
+        border-radius:28px !important;
+      }
+
+      .service-item h3,
+      .why-item h3,
+      .review-item h3,
+      .step-item h3{
+        font-size:26px !important;
+        line-height:1.18 !important;
+        word-break:normal !important;
+        overflow-wrap:normal !important;
+      }
+
+      .service-item p,
+      .why-item p,
+      .review-item p,
+      .step-item p{
+        font-size:16px !important;
+        line-height:1.7 !important;
+      }
+    }
+
+  
+    /* FINAL MOBILE CARDS FIX */
+    @media (max-width:700px){
+      .services-list,
+      .why-list,
+      .reviews-list,
+      .steps-list{
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:stretch !important;
+        max-width:420px !important;
+        width:100% !important;
+        margin:42px auto 0 !important;
+        gap:18px !important;
+      }
+
+      .service-item,
+      .why-item,
+      .review-item,
+      .step-item,
+      .faq-item{
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+        height:auto !important;
+        min-height:0 !important;
+        padding:24px !important;
+        border-radius:26px !important;
+      }
+
+      .service-item h3,
+      .why-item h3,
+      .review-item h3,
+      .step-item h3{
+        font-size:25px !important;
+        line-height:1.2 !important;
+        margin-bottom:12px !important;
+        white-space:normal !important;
+      }
+
+      .service-item p,
+      .why-item p,
+      .review-item p,
+      .step-item p{
+        font-size:16px !important;
+        line-height:1.65 !important;
+      }
+
+      .service-icon,
+      .why-icon{
+        width:54px !important;
+        height:54px !important;
+        margin-bottom:18px !important;
+      }
+
+      .step-number{
+        font-size:46px !important;
+        margin-bottom:18px !important;
+      }
+    }
+
+  
+.section h2{
+  position:relative;
+}
+
+.section h2::after{
+  content:"";
+  display:block;
+  width:180px;
+  height:8px;
+  margin:22px auto 0;
+  background:linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(34,197,94,0.35) 15%,
+    rgba(34,197,94,0.9) 50%,
+    rgba(34,197,94,0.35) 85%,
+    transparent 100%
+  );
+  border-radius:999px;
+  backdrop-filter:blur(12px);
+  box-shadow:
+    0 0 25px rgba(34,197,94,0.45),
+    0 0 50px rgba(34,197,94,0.25);
+}
+
+
+.map-wrap{
+  max-width:1100px;
+  margin:60px auto 0;
+  overflow:hidden;
+  border-radius:34px;
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 24px 80px rgba(0,0,0,0.35);
+}
+
+.map-wrap iframe{
+  width:100%;
+  height:500px;
+  border:none;
+  display:block;
+}
+
+.office-info{
+  margin-top:24px;
+  color:rgba(255,255,255,0.8);
+  line-height:1.8;
+}
+
+@media (max-width:700px){
+  .map-wrap{border-radius:24px;}
+  .map-wrap iframe{height:350px;}
+}
+
+
+.whatsapp-btn{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  width:68px;
+  height:68px;
+  border-radius:50%;
+  background:#22c55e;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  text-decoration:none;
+  box-shadow:0 0 25px rgba(34,197,94,.6),0 15px 40px rgba(34,197,94,.4);
+  transition:.3s;
+}
+
+.whatsapp-btn:hover{
+  transform:translateY(-4px) scale(1.05);
+}
+
+.whatsapp-btn svg{
+  width:34px;
+  height:34px;
+}
+
+@media (max-width:700px){
+  .whatsapp-btn{
+    width:62px;
+    height:62px;
+    right:16px;
+    bottom:16px;
+  }
+
+  .whatsapp-btn svg{
+    width:30px;
+    height:30px;
+  }
+}
+
+
+.contacts-list{
+  max-width:1100px;
+  margin:70px auto 0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:22px;
+}
+
+.contact-item{
+  position:relative;
+  overflow:hidden;
+  padding:34px 24px;
+  text-align:center;
+  border-radius:34px;
+  background:linear-gradient(145deg, rgba(255,255,255,0.085), rgba(255,255,255,0.025));
+  border:1px solid rgba(255,255,255,0.11);
+  box-shadow:0 24px 80px rgba(0,0,0,0.28);
+  text-decoration:none;
+  color:#fff;
+  transition:0.35s ease;
+}
+
+.contact-item::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  background:radial-gradient(circle at top right, rgba(34,197,94,0.22), transparent 42%);
+  opacity:0;
+  transition:0.35s ease;
+  pointer-events:none;
+}
+
+.contact-item:hover::before{
+  opacity:1;
+}
+
+.contact-item:hover{
+  transform:translateY(-8px);
+  border-color:rgba(34,197,94,0.35);
+  box-shadow:0 34px 100px rgba(0,0,0,0.45);
+}
+
+.contact-icon{
+  width:60px;
+  height:60px;
+  margin:0 auto 20px;
+  border-radius:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(34,197,94,0.12);
+  border:1px solid rgba(34,197,94,0.35);
+  color:#22c55e;
+}
+
+.contact-icon svg{
+  width:30px;
+  height:30px;
+}
+
+.contact-item h3{
+  position:relative;
+  z-index:2;
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+.contact-item p{
+  position:relative;
+  z-index:2;
+  font-size:15px;
+  line-height:1.5;
+  color:rgba(255,255,255,0.65);
+}
+
+@media (max-width:1000px){
+  .contacts-list{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media (max-width:700px){
+  .contacts-list{
+    grid-template-columns:1fr;
+    max-width:420px;
+    margin-top:42px;
+    gap:16px;
+  }
+
+  .contact-item{
+    padding:26px 22px;
+    border-radius:26px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <a href="#home" class="logo">AutoDocs</a>
+
+  <input type="checkbox" id="menu-check">
+
+  <label for="menu-check" class="menu-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </label>
+
+  <div class="mobile-menu">
+    <nav>
+      <a href="#home" data-i18n="navHome">Главная</a>
+      <a href="#services" data-i18n="navServices">Услуги</a>
+      <a href="#process" data-i18n="navProcess">Как мы работаем</a>
+      <a href="#why" data-i18n="navWhy">Почему выбирают нас?</a>
+      <a href="#reviews" data-i18n="navReviews">Отзывы</a>
+      <a href="#faq" data-i18n="navFaq">FAQ</a>
+      <a href="#contacts" data-i18n="navContacts">Контакты</a>
+      <a href="#location" data-i18n="navLocation">Карта</a>
+    </nav>
+
+    <div class="flags">
+      <button class="lang-btn active" type="button" data-lang="ru">RU</button>
+      <button class="lang-btn" type="button" data-lang="ua">UA</button>
+      <button class="lang-btn" type="button" data-lang="pl">PL</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-slider">
+    <div class="hero-slide slide-1"></div>
+    <div class="hero-slide slide-2"></div>
+    <div class="hero-slide slide-3"></div>
+  </div>
+
+  <div class="hero-content">
+
+    <div class="badge">
+      <span data-i18n="badge">Оформление автодокументов в Польше</span>
+    </div>
+
+    <h1>
+      АВТОДОКУМЕНТЫ<br>
+      ПОД КЛЮЧ
+    </h1>
+
+    <p class="subtitle">
+      <span data-i18n="subtitle">Быстро • Легально • Без лишних хлопот</span>
+    </p>
+
+    <button class="btn open-form" type="button">
+      <span data-i18n="consultBtn">Получить бесплатную консультацию</span>
+    </button>
+
+  </div>
+</section>
+
+<section class="section reveal" id="services">
+
+  <h2 data-i18n="servicesTitle">Наши услуги</h2>
+
+  <p>
+    <span data-i18n="servicesText">Полное сопровождение и оформление автодокументов в Польше.</span>
+  </p>
+
+  <div class="services-list">
+
+    <div class="service-item">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M4 14l2-5h12l2 5"/>
+          <path d="M5 14h14v5H5z"/>
+          <circle cx="7.5" cy="19" r="1.5"/>
+          <circle cx="16.5" cy="19" r="1.5"/>
+        </svg>
+      </div>
+      <h3>Техосмотр без проблем</h3>
+      <p>Помогаем быстро пройти технический осмотр автомобиля без лишней бюрократии.</p>
+    </div>
+
+    <div class="service-item">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="7" width="18" height="10" rx="2"/>
+          <path d="M7 12h3"/>
+          <path d="M14 12h3"/>
+        </svg>
+      </div>
+      <h3>Польские номера</h3>
+      <p>Регистрация и перерегистрация автомобиля под ключ.</p>
+    </div>
+
+    <div class="service-item">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 18c3-8 11-8 14-2"/>
+          <path d="M7 14l-2 4 4 1"/>
+          <path d="M17 12l2 4-4 1"/>
+        </svg>
+      </div>
+      <h3>Красные номера</h3>
+      <p>Оформляем временные номера для перевозки автомобиля.</p>
+    </div>
+
+    <div class="service-item">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 12h14"/>
+          <path d="M9 8l-4 4 4 4"/>
+          <path d="M15 8l4 4-4 4"/>
+        </svg>
+      </div>
+      <h3>Снятие авто с учёта</h3>
+      <p>Помогаем официально снять автомобиль с учёта.</p>
+    </div>
+
+    <div class="service-item">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M8 3h7l4 4v14H8z"/>
+          <path d="M15 3v5h4"/>
+          <path d="M5 8v13"/>
+          <path d="M11 15h5"/>
+        </svg>
+      </div>
+      <h3>Восстановление техпаспорта</h3>
+      <p>Сопровождаем процесс восстановления утерянных документов.</p>
+    </div>
+
+    <div class="service-item">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M4 5h9"/>
+          <path d="M9 5c0 5-2 8-5 10"/>
+          <path d="M6 10c1.5 2.5 4 4 7 5"/>
+          <path d="M15 19l3-8 3 8"/>
+          <path d="M16 16h4"/>
+        </svg>
+      </div>
+      <h3>Переводы документов</h3>
+      <p>Делаем переводы документов для оформления автомобиля.</p>
+    </div>
+
+    <div class="service-item">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3C7 6 5 10 5 13a7 7 0 0 0 14 0c0-3-2-7-7-10z"/>
+          <path d="M9 14l2 2 4-5"/>
+        </svg>
+      </div>
+      <h3>Страхование авто</h3>
+      <p>Помогаем подобрать страхование автомобиля в Польше.</p>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="section reveal" id="process">
+
+  <h2 data-i18n="processTitle">Как мы работаем</h2>
+
+  <p>
+    <span data-i18n="processText">Четыре простых шага — и документы будут готовы без стресса.</span>
+  </p>
+
+  <div class="steps-list">
+
+    <div class="step-item">
+      <div class="step-number">01</div>
+      <h3>Заявка</h3>
+      <p>Вы оставляете заявку или пишете нам.</p>
+    </div>
+
+    <div class="step-item">
+      <div class="step-number">02</div>
+      <h3>Проверка</h3>
+      <p>Проверяем документы и консультируем.</p>
+    </div>
+
+    <div class="step-item">
+      <div class="step-number">03</div>
+      <h3>Оформление</h3>
+      <p>Берём весь процесс на себя.</p>
+    </div>
+
+    <div class="step-item">
+      <div class="step-number">04</div>
+      <h3>Готово</h3>
+      <p>Передаём вам готовые документы.</p>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="section reveal" id="why">
+
+  <h2 data-i18n="whyTitle">Почему выбирают нас?</h2>
+
+  <p>
+    <span data-i18n="whyText">Простое оформление без стресса и лишних действий.</span>
+  </p>
+
+  <div class="why-list">
+
+    <div class="why-item">
+      <div class="why-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z"/>
+          <path d="M9 12l2 2 4-5"/>
+        </svg>
+      </div>
+      <h3>Работаем «под ключ»</h3>
+      <p>Вам не нужно разбираться в нюансах — мы берём процесс на себя.</p>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M7 3h7l5 5v13H7z"/>
+          <path d="M14 3v5h5"/>
+          <path d="M9 14h6"/>
+        </svg>
+      </div>
+      <h3>Только официально и легально</h3>
+      <p>Работаем через официальные процедуры и государственные органы.</p>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="8"/>
+          <path d="M12 7v5l3 2"/>
+        </svg>
+      </div>
+      <h3>Экономим ваше время и деньги</h3>
+      <p>Помогаем избежать ошибок, лишних поездок и ненужных расходов.</p>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.9z"/>
+        </svg>
+      </div>
+      <h3>Опыт и доверие клиентов</h3>
+      <p>Работаем с клиентами по всей Польше и ценим долгосрочную репутацию.</p>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="section reveal" id="reviews">
+
+  <h2 data-i18n="reviewsTitle">Отзывы клиентов</h2>
+
+  <p>
+    <span data-i18n="reviewsText">Люди доверяют нам оформление документов по всей Польше.</span>
+  </p>
+
+  <div class="reviews-list">
+
+    <div class="review-item">
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Алексей" class="review-photo">
+      <h3>Алексей</h3>
+      <span>Варшава</span>
+      <p>“Сделали польские номера за 2 дня. Вообще ничего не делал сам.”</p>
+    </div>
+
+    <div class="review-item">
+      <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Дмитрий" class="review-photo">
+      <h3>Дмитрий</h3>
+      <span>Краков</span>
+      <p>“Помогли восстановить техпаспорт. Всё сделали быстро и спокойно.”</p>
+    </div>
+
+    <div class="review-item">
+      <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Ольга" class="review-photo">
+      <h3>Ольга</h3>
+      <span>Вроцлав</span>
+      <p>“Очень удобно. Оформили документы без очередей и нервов.”</p>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="section reveal" id="faq">
+
+  <h2>FAQ</h2>
+
+  <p>
+    <span data-i18n="faqText">Ответы на вопросы, которые чаще всего задают перед обращением.</span>
+  </p>
+
+  <div class="faq-wrap">
+
+    <div class="faq-item">
+      <button class="faq-toggle">
+        <span>Сколько времени занимает оформление?</span>
+        <div class="faq-icon-plus"></div>
+      </button>
+
+      <div class="faq-answer">
+        <p>
+          В среднем оформление занимает 3–7 рабочих дней.
+          Срочное оформление возможно от 1 дня — зависит от услуги и документов.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-toggle">
+        <span>Это всё официально и легально?</span>
+        <div class="faq-icon-plus"></div>
+      </button>
+
+      <div class="faq-answer">
+        <p>
+          Да. Мы работаем только через официальные процедуры,
+          государственные органы и легальные способы оформления.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-toggle">
+        <span>Какие документы нужны от меня?</span>
+        <div class="faq-icon-plus"></div>
+      </button>
+
+      <div class="faq-answer">
+        <p>
+          Обычно нужен минимальный пакет документов.
+          После консультации мы точно скажем, что потребуется именно в вашей ситуации.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-toggle">
+        <span>Работаете ли вы с авто из других стран?</span>
+        <div class="faq-icon-plus"></div>
+      </button>
+
+      <div class="faq-answer">
+        <p>
+          Да. Работаем с автомобилями из Украины, Германии, Литвы
+          и других стран.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" type="button">×</button>
+
+    <div class="form-screen active">
+      <h2 data-i18n="modalTitle">Бесплатная консультация</h2>
+      <p><span data-i18n="modalText">Оставьте данные, и мы свяжемся с вами.</span></p>
+
+      <input type="text" placeholder="Ваше имя" data-placeholder="name">
+      <input type="tel" placeholder="Номер телефона" data-placeholder="phone">
+
+      <button class="submit-btn" type="button"><span data-i18n="submitBtn">Оставить заявку</span></button>
+    </div>
+
+    <div class="success-screen">
+      <h2 data-i18n="successTitle">Заявка отправлена</h2>
+      <p><span data-i18n="successText">Спасибо! Мы свяжемся с вами в ближайшее время.</span></p>
+
+      <button class="back-btn" type="button"><span data-i18n="backBtn">Вернуться на сайт</span></button>
+    </div>
+  </div>
+</div>
+
+
+
+<section class="section reveal" id="contacts">
+
+  <h2>Контакты</h2>
+
+  <p>
+    Свяжитесь с нами удобным способом — ответим и подскажем, какие документы нужны.
+  </p>
+
+  <div class="contacts-list">
+
+    <a class="contact-item" href="https://www.facebook.com/share/1JJMAvjyVG/?mibextid=wwXIfr" target="_blank">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M14 8h2V5h-2c-2.8 0-4.5 1.7-4.5 4.4V11H7v3h2.5v7h3.2v-7h2.7l.5-3h-3.2V9.7c0-1.1.4-1.7 1.3-1.7z"/>
+        </svg>
+      </div>
+      <h3>Facebook</h3>
+      <p>Написать</p>
+    </a>
+
+    <a class="contact-item" href="https://t.me/+48536471103" target="_blank">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21.8 4.6 18.5 20c-.2 1-.8 1.2-1.6.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.4-.1-.6-.6-.3L6.4 13.7 1.7 12.2c-1-.3-1-1 .2-1.5L20.2 3.6c.9-.3 1.7.2 1.6 1z"/>
+        </svg>
+      </div>
+      <h3>Telegram</h3>
+      <p>Написать</p>
+    </a>
+
+    <a class="contact-item" href="https://wa.me/48536471103" target="_blank">
+      <div class="contact-icon">
+        <svg viewBox="0 0 32 32" fill="currentColor">
+          <path d="M16 3C8.8 3 3 8.7 3 15.8c0 2.5.7 4.9 2.1 7L3 29l6.4-2c2 .9 4.2 1.4 6.5 1.4 7.2 0 13-5.7 13-12.8S23.2 3 16 3zm0 23.2c-2 0-4-.5-5.7-1.5l-.4-.2-3.8 1.2 1.2-3.7-.3-.4c-1.2-1.8-1.8-3.8-1.8-5.9C5.2 10 10 5.3 16 5.3S26.8 10 26.8 15.8 22 26.2 16 26.2z"/>
+        </svg>
+      </div>
+      <h3>WhatsApp</h3>
+      <p>Написать</p>
+    </a>
+
+    <a class="contact-item" href="tel:+48536471103">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 11.2 19 19.5 19.5 0 0 1 5 12.8 19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/>
+        </svg>
+      </div>
+      <h3>Телефон</h3>
+      <p>Позвонить</p>
+    </a>
+
+  </div>
+
+</section>
+
+
+<section class="section reveal" id="location">
+
+  <h2>Наш офис</h2>
+
+  <p>
+    Вы можете посетить нас по адресу:
+    Jaworzyńska 254, 59-220 Legnica
+  </p>
+
+  <div class="map-wrap">
+    <iframe
+      src="https://maps.google.com/maps?q=Jaworzyńska%20254,%2059-220%20Legnica&t=&z=15&ie=UTF8&iwloc=&output=embed"
+      loading="lazy">
+    </iframe>
+  </div>
+
+  <div class="office-info">
+    <strong>AutoDocs Poland</strong><br>
+    Jaworzyńska 254<br>
+    59-220 Legnica
+  </div>
+
+</section>
+
+
+<footer>
+  © 2026 AutoDocs Poland — Все права защищены
+</footer>
+
+<script>
+  const faqItems = document.querySelectorAll(".faq-item");
+
+  faqItems.forEach(function(item){
+    const button = item.querySelector(".faq-toggle");
+
+    button.addEventListener("click", function(){
+      item.classList.toggle("active");
+    });
+  });
+
+  const revealElements = document.querySelectorAll(".reveal");
+
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add("active");
+      } else {
+        entry.target.classList.remove("active");
+      }
+    });
+  }, {
+    threshold:0.15
+  });
+
+  revealElements.forEach(function(element){
+    observer.observe(element);
+  });
+
+  window.addEventListener("scroll", function(){
+    const heroContent = document.querySelector(".hero-content");
+
+    if(heroContent){
+      const scrollY = window.scrollY;
+
+      heroContent.style.transform =
+        "translateY(" + scrollY * 0.08 + "px)";
+    }
+  });
+
+  const modal = document.querySelector("#modal");
+  const openFormButton = document.querySelector(".open-form");
+  const closeModalButton = document.querySelector(".modal-close");
+  const submitButton = document.querySelector(".submit-btn");
+  const backButton = document.querySelector(".back-btn");
+
+  const formScreen = document.querySelector(".form-screen");
+  const successScreen = document.querySelector(".success-screen");
+
+  openFormButton.addEventListener("click", function(){
+    modal.classList.add("active");
+    formScreen.classList.add("active");
+    successScreen.classList.remove("active");
+  });
+
+  closeModalButton.addEventListener("click", function(){
+    modal.classList.remove("active");
+  });
+
+  submitButton.addEventListener("click", function(){
+    formScreen.classList.remove("active");
+    successScreen.classList.add("active");
+  });
+
+  backButton.addEventListener("click", function(){
+    modal.classList.remove("active");
+    window.location.href = "#home";
+  });
+
+
+  const translations = {
+    ru: {
+      navHome:"Главная", navServices:"Услуги", navProcess:"Как мы работаем", navWhy:"Почему выбирают нас?", navReviews:"Отзывы", navFaq:"FAQ", navContacts:"Контакты", navLocation:"Карта",
+      badge:"Оформление автодокументов в Польше",
+      subtitle:"Быстро • Легально • Без лишних хлопот",
+      consultBtn:"Получить бесплатную консультацию",
+      servicesTitle:"Наши услуги", servicesText:"Полное сопровождение и оформление автодокументов в Польше.",
+      processTitle:"Как мы работаем", processText:"Четыре простых шага — и документы будут готовы без стресса.",
+      whyTitle:"Почему выбирают нас?", whyText:"Простое оформление без стресса и лишних действий.",
+      reviewsTitle:"Отзывы клиентов", reviewsText:"Люди доверяют нам оформление документов по всей Польше.",
+      faqText:"Ответы на вопросы, которые чаще всего задают перед обращением.",
+      modalTitle:"Бесплатная консультация", modalText:"Оставьте данные, и мы свяжемся с вами.",
+      submitBtn:"Оставить заявку", successTitle:"Заявка отправлена",
+      successText:"Спасибо! Мы свяжемся с вами в ближайшее время.", backBtn:"Вернуться на сайт",
+      name:"Ваше имя", phone:"Номер телефона"
+    },
+    ua: {
+      navHome:"Головна", navServices:"Послуги", navProcess:"Як ми працюємо", navWhy:"Чому обирають нас?", navReviews:"Відгуки", navFaq:"FAQ", navContacts:"Контакти", navLocation:"Карта",
+      badge:"Оформлення автодокументів у Польщі",
+      subtitle:"Швидко • Легально • Без зайвих клопотів",
+      consultBtn:"Отримати безкоштовну консультацію",
+      servicesTitle:"Наші послуги", servicesText:"Повний супровід та оформлення автодокументів у Польщі.",
+      processTitle:"Як ми працюємо", processText:"Чотири прості кроки — і документи будуть готові без стресу.",
+      whyTitle:"Чому обирають нас?", whyText:"Просте оформлення без стресу та зайвих дій.",
+      reviewsTitle:"Відгуки клієнтів", reviewsText:"Люди довіряють нам оформлення документів по всій Польщі.",
+      faqText:"Відповіді на питання, які найчастіше ставлять перед зверненням.",
+      modalTitle:"Безкоштовна консультація", modalText:"Залиште дані, і ми зв’яжемося з вами.",
+      submitBtn:"Залишити заявку", successTitle:"Заявку відправлено",
+      successText:"Дякуємо! Ми зв’яжемося з вами найближчим часом.", backBtn:"Повернутися на сайт",
+      name:"Ваше ім’я", phone:"Номер телефону"
+    },
+    pl: {
+      navHome:"Główna", navServices:"Usługi", navProcess:"Jak pracujemy", navWhy:"Dlaczego my?", navReviews:"Opinie", navFaq:"FAQ", navContacts:"Kontakt", navLocation:"Mapa",
+      badge:"Obsługa dokumentów samochodowych w Polsce",
+      subtitle:"Szybko • Legalnie • Bez zbędnych formalności",
+      consultBtn:"Uzyskaj bezpłatną konsultację",
+      servicesTitle:"Nasze usługi", servicesText:"Pełna pomoc w przygotowaniu dokumentów samochodowych w Polsce.",
+      processTitle:"Jak pracujemy", processText:"Cztery proste kroki — i dokumenty są gotowe bez stresu.",
+      whyTitle:"Dlaczego wybierają nas?", whyText:"Proste załatwienie spraw bez stresu i zbędnych działań.",
+      reviewsTitle:"Opinie klientów", reviewsText:"Klienci w całej Polsce powierzają nam dokumenty samochodowe.",
+      faqText:"Odpowiedzi na pytania najczęściej zadawane przed kontaktem.",
+      modalTitle:"Bezpłatna konsultacja", modalText:"Zostaw dane, a skontaktujemy się z Tobą.",
+      submitBtn:"Wyślij zgłoszenie", successTitle:"Zgłoszenie wysłane",
+      successText:"Dziękujemy! Skontaktujemy się z Tobą w najbliższym czasie.", backBtn:"Wróć na stronę",
+      name:"Imię", phone:"Numer telefonu"
+    }
+  };
+
+  const langButtons = document.querySelectorAll(".lang-btn");
+
+  langButtons.forEach(function(button){
+    button.addEventListener("click", function(){
+      const lang = button.dataset.lang;
+      const dict = translations[lang];
+
+      document.querySelectorAll("[data-i18n]").forEach(function(element){
+        const key = element.dataset.i18n;
+        if(dict[key]){
+          element.textContent = dict[key];
+        }
+      });
+
+      document.querySelectorAll("[data-placeholder]").forEach(function(input){
+        const key = input.dataset.placeholder;
+        if(dict[key]){
+          input.placeholder = dict[key];
+        }
+      });
+
+      langButtons.forEach(function(btn){
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+    });
+  });
+
+
+  const fullTranslations = {
+    ru: {
+      services:["Техосмотр без проблем","Помогаем быстро пройти технический осмотр автомобиля без лишней бюрократии.","Польские номера","Регистрация и перерегистрация автомобиля под ключ.","Красные номера","Оформляем временные номера для перевозки автомобиля.","Снятие авто с учёта","Помогаем официально снять автомобиль с учёта.","Восстановление техпаспорта","Сопровождаем процесс восстановления утерянных документов.","Переводы документов","Делаем переводы документов для оформления автомобиля.","Страхование авто","Помогаем подобрать страхование автомобиля в Польше."],
+      steps:["Заявка","Вы оставляете заявку или пишете нам.","Проверка","Проверяем документы и консультируем.","Оформление","Берём весь процесс на себя.","Готово","Передаём вам готовые документы."],
+      why:["Работаем «под ключ»","Вам не нужно разбираться в нюансах — мы берём процесс на себя.","Только официально и легально","Работаем через официальные процедуры и государственные органы.","Экономим ваше время и деньги","Помогаем избежать ошибок, лишних поездок и ненужных расходов.","Опыт и доверие клиентов","Работаем с клиентами по всей Польше и ценим долгосрочную репутацию."],
+      reviews:["Алексей","Варшава","“Сделали польские номера за 2 дня. Вообще ничего не делал сам.”","Дмитрий","Краков","“Помогли восстановить техпаспорт. Всё сделали быстро и спокойно.”","Ольга","Вроцлав","“Очень удобно. Оформили документы без очередей и нервов.”"],
+      faq:["Сколько времени занимает оформление?","В среднем оформление занимает 3–7 рабочих дней. Срочное оформление возможно от 1 дня — зависит от услуги и документов.","Это всё официально и легально?","Да. Мы работаем только через официальные процедуры, государственные органы и легальные способы оформления.","Какие документы нужны от меня?","Обычно нужен минимальный пакет документов. После консультации мы точно скажем, что потребуется именно в вашей ситуации.","Работаете ли вы с авто из других стран?","Да. Работаем с автомобилями из Украины, Германии, Литвы и других стран."],
+      footer:"© 2026 AutoDocs Poland — Все права защищены"
+    },
+    ua: {
+      services:["Техогляд без проблем","Допомагаємо швидко пройти технічний огляд автомобіля без зайвої бюрократії.","Польські номери","Реєстрація та перереєстрація автомобіля під ключ.","Червоні номери","Оформлюємо тимчасові номери для перевезення автомобіля.","Зняття авто з обліку","Допомагаємо офіційно зняти автомобіль з обліку.","Відновлення техпаспорта","Супроводжуємо процес відновлення втрачених документів.","Переклади документів","Робимо переклади документів для оформлення автомобіля.","Страхування авто","Допомагаємо підібрати страхування автомобіля в Польщі."],
+      steps:["Заявка","Ви залишаєте заявку або пишете нам.","Перевірка","Перевіряємо документи та консультуємо.","Оформлення","Беремо весь процес на себе.","Готово","Передаємо вам готові документи."],
+      why:["Працюємо «під ключ»","Вам не потрібно розбиратися в нюансах — ми беремо процес на себе.","Тільки офіційно та легально","Працюємо через офіційні процедури та державні органи.","Економимо ваш час і гроші","Допомагаємо уникнути помилок, зайвих поїздок і непотрібних витрат.","Досвід і довіра клієнтів","Працюємо з клієнтами по всій Польщі та цінуємо репутацію."],
+      reviews:["Олексій","Варшава","“Зробили польські номери за 2 дні. Сам нічого не робив.”","Дмитро","Краків","“Допомогли відновити техпаспорт. Все зробили швидко і спокійно.”","Ольга","Вроцлав","“Дуже зручно. Оформили документи без черг і нервів.”"],
+      faq:["Скільки часу займає оформлення?","У середньому оформлення займає 3–7 робочих днів. Термінове оформлення можливе від 1 дня — залежить від послуги та документів.","Це все офіційно і легально?","Так. Ми працюємо тільки через офіційні процедури, державні органи та легальні способи оформлення.","Які документи потрібні від мене?","Зазвичай потрібен мінімальний пакет документів. Після консультації ми точно скажемо, що потрібно саме у вашій ситуації.","Чи працюєте ви з авто з інших країн?","Так. Працюємо з автомобілями з України, Німеччини, Литви та інших країн."],
+      footer:"© 2026 AutoDocs Poland — Усі права захищені"
+    },
+    pl: {
+      services:["Przegląd techniczny bez problemów","Pomagamy szybko przejść przegląd techniczny samochodu bez zbędnej biurokracji.","Polskie tablice","Rejestracja i przerejestrowanie samochodu pod klucz.","Czerwone tablice","Załatwiamy tymczasowe tablice do transportu samochodu.","Wyrejestrowanie auta","Pomagamy oficjalnie wyrejestrować samochód.","Odtworzenie dowodu rejestracyjnego","Pomagamy w procesie odtworzenia utraconych dokumentów.","Tłumaczenia dokumentów","Wykonujemy tłumaczenia dokumentów do rejestracji auta.","Ubezpieczenie auta","Pomagamy dobrać ubezpieczenie samochodu w Polsce."],
+      steps:["Zgłoszenie","Zostawiasz zgłoszenie albo piszesz do nas.","Sprawdzenie","Sprawdzamy dokumenty i doradzamy.","Załatwienie","Bierzemy cały proces na siebie.","Gotowe","Przekazujemy gotowe dokumenty."],
+      why:["Praca pod klucz","Nie musisz znać szczegółów — zajmujemy się całym procesem.","Oficjalnie i legalnie","Działamy przez oficjalne procedury i urzędy.","Oszczędzamy czas i pieniądze","Pomagamy uniknąć błędów, zbędnych wyjazdów i kosztów.","Doświadczenie i zaufanie","Pracujemy z klientami w całej Polsce i dbamy o reputację."],
+      reviews:["Aleksiej","Warszawa","“Polskie tablice załatwili w 2 dni. Sam nic nie musiałem robić.”","Dmytro","Kraków","“Pomogli odtworzyć dowód rejestracyjny. Wszystko szybko i spokojnie.”","Olga","Wrocław","“Bardzo wygodnie. Dokumenty załatwione bez kolejek i stresu.”"],
+      faq:["Ile trwa załatwienie dokumentów?","Średnio 3–7 dni roboczych. Tryb pilny jest możliwy od 1 dnia — zależy od usługi i dokumentów.","Czy to wszystko jest oficjalne i legalne?","Tak. Działamy wyłącznie przez oficjalne procedury, urzędy i legalne sposoby.","Jakie dokumenty są potrzebne?","Zwykle potrzebny jest minimalny pakiet dokumentów. Po konsultacji powiemy dokładnie, co będzie potrzebne w Twojej sytuacji.","Czy obsługujecie auta z innych krajów?","Tak. Obsługujemy auta z Ukrainy, Niemiec, Litwy i innych krajów."],
+      footer:"© 2026 AutoDocs Poland — Wszelkie prawa zastrzeżone"
+    }
+  };
+
+  function applyFullTranslation(lang){
+    const t = fullTranslations[lang];
+    if(!t) return;
+
+    document.querySelectorAll(".service-item").forEach(function(card, i){
+      const h = card.querySelector("h3");
+      const p = card.querySelector("p");
+      if(h) h.textContent = t.services[i * 2];
+      if(p) p.textContent = t.services[i * 2 + 1];
+    });
+
+    document.querySelectorAll(".step-item").forEach(function(card, i){
+      const h = card.querySelector("h3");
+      const p = card.querySelector("p");
+      if(h) h.textContent = t.steps[i * 2];
+      if(p) p.textContent = t.steps[i * 2 + 1];
+    });
+
+    document.querySelectorAll(".why-item").forEach(function(card, i){
+      const h = card.querySelector("h3");
+      const p = card.querySelector("p");
+      if(h) h.textContent = t.why[i * 2];
+      if(p) p.textContent = t.why[i * 2 + 1];
+    });
+
+    document.querySelectorAll(".review-item").forEach(function(card, i){
+      const h = card.querySelector("h3");
+      const span = card.querySelector("span");
+      const p = card.querySelector("p");
+      if(h) h.textContent = t.reviews[i * 3];
+      if(span) span.textContent = t.reviews[i * 3 + 1];
+      if(p) p.textContent = t.reviews[i * 3 + 2];
+    });
+
+    document.querySelectorAll(".faq-item").forEach(function(card, i){
+      const title = card.querySelector(".faq-toggle span");
+      const text = card.querySelector(".faq-answer p");
+      if(title) title.textContent = t.faq[i * 2];
+      if(text) text.textContent = t.faq[i * 2 + 1];
+    });
+
+    const footer = document.querySelector("footer");
+    if(footer) footer.textContent = t.footer;
+  }
+
+  document.querySelectorAll(".lang-btn").forEach(function(button){
+    button.addEventListener("click", function(){
+      setTimeout(function(){
+        applyFullTranslation(button.dataset.lang);
+      }, 0);
+    });
+  });
+
+</script>
+
+
+<a href="https://wa.me/48880268982" class="whatsapp-btn" target="_blank">
+<svg viewBox="0 0 32 32" fill="currentColor">
+<path d="M16 3C8.8 3 3 8.7 3 15.8c0 2.5.7 4.9 2.1 7L3 29l6.4-2c2 .9 4.2 1.4 6.5 1.4 7.2 0 13-5.7 13-12.8S23.2 3 16 3zm0 23.2c-2 0-4-.5-5.7-1.5l-.4-.2-3.8 1.2 1.2-3.7-.3-.4c-1.2-1.8-1.8-3.8-1.8-5.9C5.2 10 10 5.3 16 5.3S26.8 10 26.8 15.8 22 26.2 16 26.2z"/>
+</svg>
+</a>
+
+</body>
+</html>
